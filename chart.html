@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графики</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px; /* Уменьшили верхний внешний отступ */
+        }
+        canvas {
+            width: 85% !important;
+            height: 460px !important;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .select-container,
+        .checkbox-container {
+            margin-bottom: 20px; 
+            text-align: center;
+        }
+        select {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            text-align-last: center;
+        }
+        .checkbox {
+            margin: 0 10px;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #f4f4f4;
+            }
+            .button {
+                background-color: #0056b3;
+            }
+            .button:hover {
+                background-color: #007BFF;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="select-container">
+            <label for="metricSelect">Выберите показатель:</label>
+            <select id="metricSelect">
+                <option value="Активы">Активы</option>
+                <option value="Пассивы">Пассивы</option>
+                <option value="Капитал">Собственный капитал</option>
+                <option value="Чистая прибыль">Чистая прибыль</option>
+                <option value="ROA">ROA</option>
+                <option value="ROE">ROE</option>
+                <option value="Финансовый леверидж">Финансовый леверидж</option>
+                <option value="Чистая процентная маржа">Чистая процентная маржа</option>
+                <option value="Достаточность капитала (Н1)">Достаточность капитала (Н1)</option>
+                <option value="Н2">Н2</option>
+                <option value="Н3">Н3</option>
+                <option value="Н4">Н4</option>
+                <option value="Чистый спрэд">Чистый спрэд</option>
+            </select>
+        </div>
+        <div class="checkbox-container">
+            <label class="checkbox"><input type="checkbox" value="ВТБ" checked> ВТБ</label>
+            <label class="checkbox"><input type="checkbox" value="Сбербанк" checked> Сбербанк</label>
+            <label class="checkbox"><input type="checkbox" value="Тинькофф Банк" checked> Тинькофф Банк</label>
+            <label class="checkbox"><input type="checkbox" value="Альфа-Банк" checked> Альфа-Банк</label>
+            <label class="checkbox"><input type="checkbox" value="Райффайзенбанк" checked> Райффайзенбанк</label>
+        </div>
+        <canvas id="chart"></canvas>
+        <div class="button-container">
+            <a class="button" href="main.html">Вернуться</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const banks = ['ВТБ', 'Сбербанк', 'Тинькофф Банк', 'Альфа-Банк', 'Райффайзенбанк'];
+            const years = ['2017', '2018', '2019', '2020', '2021', '2022'];
+            const bankColors = {
+                'ВТБ': 'blue',
+                'Сбербанк': 'green',
+                'Тинькофф Банк': 'yellow',
+                'Альфа-Банк': 'red',
+                'Райффайзенбанк': 'orange'
+            };
+            let chartInstance;
+
+            async function loadData() {
+                try {
+                    const response = await fetch('Dataset.json');
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    return null;
+                }
+            }
+
+            function getSelectedBanks() {
+                const checkboxes = document.querySelectorAll('.checkbox input[type="checkbox"]');
+                return Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+            }
+
+            async function createChart() {
+                const data = await loadData();
+                if (!data) return;
+
+                const selectedMetric = document.getElementById('metricSelect').value;
+                const selectedBanks = getSelectedBanks();
+                const chartData = {
+                    labels: years,
+                    datasets: []
+                };
+
+                selectedBanks.forEach(bank => {
+                    const bankData = data[bank];
+                    const values = years.map(year => bankData.find(entry => entry.Год === parseInt(year))[selectedMetric]);
+
+                    chartData.datasets.push({
+                        label: bank,
+                        data: values,
+                        fill: false,
+                        borderColor: bankColors[bank],
+                        backgroundColor: bankColors[bank], // Цвет маркеров
+                        pointBackgroundColor: bankColors[bank], // Цвет кружков
+                        pointBorderColor: bankColors[bank], // Цвет границ кружков
+                        pointRadius: 4, // Размер кружков
+                        pointHoverRadius: 7, // Размер кружков при наведении
+                        tension: 0.1
+                    });
+                });
+
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                const ctx = document.getElementById('chart').getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true, // Используем кружочки
+                                    pointStyle: 'circle', // Задаем стиль кружочков
+                                    font: {
+                                        size: 14, // Увеличиваем размер шрифта
+                                        color: 'black' // Цвет текста в легенде
+                                    },
+                                    padding: 22 // Добавляем расстояние между подписями
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.raw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('metricSelect').addEventListener('change', createChart);
+            document.querySelectorAll('.checkbox input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', createChart);
+            });
+
+            createChart(); // Создаем график при загрузке
+        });
+    </script>
+</body>
+</html>

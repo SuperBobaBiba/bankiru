@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Данные</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        #dataTable {
+            display: none;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .button-return {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .button-return:hover {
+            background-color: #0056b3;
+        }
+        .button-indicators {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: #000;
+            background-color: #fff;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 200px; /* ширина как у селекторов */
+            height: 33px; /* высота как у селекторов */
+        }
+        .button-indicators:hover {
+            background-color: #f4f4f4;
+        }
+        .hidden {
+            display: none;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .filters {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* выравнивание по вертикали */
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .filter {
+            margin: 0 10px;
+        }
+        .filter label {
+            display: block;
+            text-align: left;
+        }
+        .select2-container {
+            width: 200px !important;
+        }
+
+        .select2-container::after {
+            content: '\25BC'; /* Код стрелочки вниз */
+            font-size: 13px; /* Размер шрифта стрелочки */
+            position: absolute; /* Абсолютное позиционирование относительно корневого элемента */
+            top: 50%; /* Положение по вертикали */
+            right: 10px; /* Положение справа */
+            transform: translateY(-50%); /* Смещение по вертикали на половину высоты элемента */
+            pointer-events: none; /* Элемент не реагирует на события мыши, чтобы не мешать кликам на селекторе */
+            display: none !important;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .column-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+            text-align: left;
+        }
+        .column-dropdown-content input {
+            margin: 5px;
+        }
+        .column-dropdown-content label {
+            margin-left: 5px;
+        }
+        .column-dropdown:hover .column-dropdown-content {
+            display: block;
+        }
+        .column-dropdown .button-indicators {
+            height: 33px; /* делаем кнопку одинаковой высоты с селекторами */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="tablesPage" class="container">
+        <div class="filters">
+            <div class="filter">
+                <select id="bankFilter" multiple>
+                    <option value="ВТБ">ВТБ</option>
+                    <option value="Сбербанк">Сбербанк</option>
+                    <option value="Тинькофф Банк">Тинькофф Банк</option>
+                    <option value="Альфа-Банк">Альфа-Банк</option>
+                    <option value="Райффайзенбанк">Райффайзенбанк</option>
+                </select>
+            </div>
+            <div class="filter">
+                <select id="yearFilter" multiple>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                </select>
+            </div>
+            <div class="column-dropdown filter">
+                <button class="button-indicators">Показатели</button>
+                <div class="column-dropdown-content">
+                    <label><input type="checkbox" id="select-all" checked>Выбрать все</label>
+                    <label><input type="checkbox" id="col-Активы" checked>Активы</label>
+                    <label><input type="checkbox" id="col-Пассивы" checked>Пассивы</label>
+                    <label><input type="checkbox" id="col-Капитал" checked>Собственный капитал</label>
+                    <label><input type="checkbox" id="col-Чистая-прибыль" checked>Чистая прибыль</label>
+                    <label><input type="checkbox" id="col-ROA" checked>ROA</label>
+                    <label><input type="checkbox" id="col-ROE" checked>ROE</label>
+                    <label><input type="checkbox" id="col-Финансовый-леверидж" checked>Финансовый леверидж</label>
+                    <label><input type="checkbox" id="col-Чистая-процентная-маржа" checked>Чистая процентная маржа</label>
+                    <label><input type="checkbox" id="col-Достаточность-капитала-Н1" checked>Достаточность капитала (Н1)</label>
+                    <label><input type="checkbox" id="col-Н2" checked>Н2</label>
+                    <label><input type="checkbox" id="col-Н3" checked>Н3</label>
+                    <label><input type="checkbox" id="col-Н4" checked>Н4</label>
+                    <label><input type="checkbox" id="col-Чистый-спрэд" checked>Чистый спрэд</label>
+                </div>
+            </div>
+        </div>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Банк</th>
+                    <th>Год</th>
+                    <th class="col-Активы">Активы (тыс.р.)</th>
+                    <th class="col-Пассивы">Пассивы (тыс.р.)</th>
+                    <th class="col-Капитал">Собственный капитал (тыс.р.)</th>
+                    <th class="col-Чистая-прибыль">Чистая прибыль (тыс.р.)</th>
+                    <th class="col-ROA">ROA</th>
+                    <th class="col-ROE">ROE</th>
+                    <th class="col-Финансовый-леверидж">Финансовый леверидж</th>
+                    <th class="col-Чистая-процентная-маржа">Чистая процентная маржа</th>
+                    <th class="col-Достаточность-капитала-Н1">Достаточность капитала (Н1)</th>
+                    <th class="col-Н2">Н2</th>
+                    <th class="col-Н3">Н3</th>
+                    <th class="col-Н4">Н4</th>
+                    <th class="col-Чистый-спрэд">Чистый спрэд</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Данные будут добавлены здесь с помощью JavaScript -->
+            </tbody>
+        </table>
+        <div class="button-container">
+            <button class="button-return" onclick="window.location.href = 'main.html'">Вернуться</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#bankFilter').select2();
+            $('#yearFilter').select2();
+
+            loadTableData();
+
+            $('#bankFilter, #yearFilter').on('change', filterTable);
+
+            const columnCheckboxes = document.querySelectorAll('.column-dropdown-content input[type="checkbox"]:not(#select-all)');
+            const selectAllCheckbox = document.querySelector('#select-all');
+
+            // Обработчик для "Выбрать все"
+            selectAllCheckbox.addEventListener('change', function() {
+                columnCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                    const columnClass = checkbox.id;
+                    const columnCells = document.querySelectorAll(`.${columnClass}`);
+                    columnCells.forEach(cell => {
+                        cell.style.display = this.checked ? '' : 'none';
+                    });
+                });
+            });
+
+            // Обработчик для каждого чекбокса столбцов
+            columnCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const columnClass = this.id;
+                    const columnCells = document.querySelectorAll(`.${columnClass}`);
+                    columnCells.forEach(cell => {
+                        cell.style.display = this.checked ? '' : 'none';
+                    });
+
+                    // Проверка состояния "Выбрать все"
+                    const allChecked = Array.from(columnCheckboxes).every(cb => cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                });
+            });
+        });
+
+        async function loadTableData() {
+            try {
+                const response = await fetch('Dataset.json');
+                const data = await response.json();
+                populateTable(data);
+            } catch (error) {
+                console.error('Error loading table data:', error);
+            }
+        }
+
+        function populateTable(data) {
+            const tableBody = document.querySelector('#dataTable tbody');
+            tableBody.innerHTML = '';
+
+            for (const bank in data) {
+                data[bank].forEach(entry => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${bank}</td>
+                        <td>${entry.Год}</td>
+                        <td class="col-Активы">${entry.Активы}</td>
+                        <td class="col-Пассивы">${entry.Пассивы}</td>
+                        <td class="col-Капитал">${entry.Капитал}</td>
+                        <td class="col-Чистая-прибыль">${entry['Чистая прибыль']}</td>
+                        <td class="col-ROA">${entry.ROA}</td>
+                        <td class="col-ROE">${entry.ROE}</td>
+                        <td class="col-Финансовый-леверидж">${entry['Финансовый леверидж']}</td>
+                        <td class="col-Чистая-процентная-маржа">${entry['Чистая процентная маржа']}</td>
+                        <td class="col-Достаточность-капитала-Н1">${entry['Достаточность капитала (Н1)']}</td>
+                        <td class="col-Н2">${entry.Н2}</td>
+                        <td class="col-Н3">${entry.Н3}</td>
+                        <td class="col-Н4">${entry.Н4}</td>
+                        <td class="col-Чистый-спрэд">${entry['Чистый спрэд']}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        function filterTable() {
+            const selectedBanks = $('#bankFilter').val();
+            const selectedYears = $('#yearFilter').val();
+
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(row => {
+                const bank = row.children[0].textContent;
+                const year = row.children[1].textContent;
+
+                const shouldDisplay = (selectedBanks.length === 0 || selectedBanks.includes(bank)) &&
+                                      (selectedYears.length === 0 || selectedYears.includes(year));
+
+                row.style.display = shouldDisplay ? '' : 'none';
+            });
+
+            document.getElementById('dataTable').style.display = 'table';
+        }
+    </script>
+</body>
+</html>
