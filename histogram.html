@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Линейные рафики</title>
+    <title>Гистограммы</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,14 +16,31 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 20px; 
+            justify-content: center;
+            padding: 8px;
+        }
+        .select-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        select {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            text-align-last: center;
+            margin: 0 10px;
         }
         canvas {
             width: 85% !important;
-            height: 460px !important;
+            max-width: 920px;
+            height: auto !important;
+            max-height: 500px;
+            margin-bottom: 20px;
         }
         .button-container {
             margin-top: 20px;
+            margin-bottom: 20px;
         }
         .button {
             display: inline-block;
@@ -34,38 +51,12 @@
             border: none;
             border-radius: 5px;
             text-decoration: none;
-            margin: 10px;
+            margin: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         .button:hover {
             background-color: #0056b3;
-        }
-        .select-container,
-        .checkbox-container {
-            margin-bottom: 20px; 
-            text-align: center;
-        }
-        select {
-            font-size: 1em;
-            padding: 10px;
-            border-radius: 5px;
-            text-align-last: center;
-        }
-        .checkbox {
-            margin: 0 10px;
-        }
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1e1e1e;
-                color: #f4f4f4;
-            }
-            .button {
-                background-color: #0056b3;
-            }
-            .button:hover {
-                background-color: #007BFF;
-            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -73,48 +64,48 @@
 <body>
     <div class="container">
         <div class="select-container">
-            <label for="metricSelect">Выберите показатель:</label>
-            <select id="metricSelect">
-                <option value="Активы">Активы</option>
-                <option value="Пассивы">Пассивы</option>
-                <option value="Капитал">Собственный капитал</option>
-                <option value="Чистая прибыль">Чистая прибыль</option>
-                <option value="ROA">ROA</option>
-                <option value="ROE">ROE</option>
-                <option value="Финансовый леверидж">Финансовый леверидж</option>
-                <option value="Чистая процентная маржа">Чистая процентная маржа</option>
-                <option value="Достаточность капитала (Н1)">Достаточность капитала (Н1)</option>
-                <option value="Н2">Н2</option>
-                <option value="Н3">Н3</option>
-                <option value="Н4">Н4</option>
-                <option value="Чистый спрэд">Чистый спрэд</option>
+            <label for="indicatorSelect">Выберите показатель:</label>
+            <select id="indicatorSelect">
+                <option value="Баланс">Бухгалтерский баланс</option>
+                <option value="Рентабельность">Рентабельность</option>
+                <option value="Ликвидность">Нормативы ликвидности</option>
+            </select>
+            <label for="bankSelect">Выберите банк:</label>
+            <select id="bankSelect">
+                <option value="ВТБ">ВТБ</option>
+                <option value="Сбербанк">Сбербанк</option>
+                <option value="Тинькофф Банк">Тинькофф Банк</option>
+                <option value="Альфа-Банк">Альфа-Банк</option>
+                <option value="Райффайзенбанк">Райффайзенбанк</option>
             </select>
         </div>
-        <div class="checkbox-container">
-            <label class="checkbox"><input type="checkbox" value="ВТБ" checked> ВТБ</label>
-            <label class="checkbox"><input type="checkbox" value="Сбербанк" checked> Сбербанк</label>
-            <label class="checkbox"><input type="checkbox" value="Тинькофф Банк" checked> Тинькофф Банк</label>
-            <label class="checkbox"><input type="checkbox" value="Альфа-Банк" checked> Альфа-Банк</label>
-            <label class="checkbox"><input type="checkbox" value="Райффайзенбанк" checked> Райффайзенбанк</label>
-        </div>
-        <canvas id="chart"></canvas>
-        <div class="button-container">
-            <a class="button" href="choice.html">Вернуться</a>
-        </div>
+        <canvas id="histogram"></canvas>
+        <a class="button" href="choice.html">Вернуться</a>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const banks = ['ВТБ', 'Сбербанк', 'Тинькофф Банк', 'Альфа-Банк', 'Райффайзенбанк'];
+            const balanceIndicators = ['Активы', 'Пассивы', 'Капитал'];
+            const profitabilityIndicators = ['ROA', 'ROE'];
+            const liquidityIndicators = ['Н2', 'Н3', 'Н4'];
             const years = ['2017', '2018', '2019', '2020', '2021', '2022'];
-            const bankColors = {
-                'ВТБ': 'blue',
-                'Сбербанк': 'green',
-                'Тинькофф Банк': 'yellow',
-                'Альфа-Банк': 'red',
-                'Райффайзенбанк': 'orange'
+            const colors = {
+                'Активы': 'limegreen',
+                'Пассивы': 'blue',
+                'Капитал': 'orange',
+                'ROA': 'green',
+                'ROE': 'darkorange',
+                'Н2': 'red',
+                'Н3': 'gold',
+                'Н4': 'royalblue'
+            };
+            const indicatorLabels = {
+                'Н2': 'Норматив мгновенной ликвидности',
+                'Н3': 'Норматив текущей ликвидности',
+                'Н4': 'Норматив долгосрочной ликвидности'
             };
             let chartInstance;
+
             const data = {
                   "Тинькофф Банк": [
                       {   
@@ -797,34 +788,45 @@
                     }
               ]
             }
-            function getSelectedBanks() {
-                const checkboxes = document.querySelectorAll('.checkbox input[type="checkbox"]');
-                return Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+
+            function getSelectedBank() {
+                const bankSelect = document.getElementById('bankSelect');
+                return bankSelect.value;
             }
 
-            async function createChart() {
-                const selectedMetric = document.getElementById('metricSelect').value;
-                const selectedBanks = getSelectedBanks();
+            function getSelectedIndicator() {
+                const indicatorSelect = document.getElementById('indicatorSelect');
+                return indicatorSelect.value;
+            }
+
+            function createHistogram() {
+                const selectedBank = getSelectedBank();
+                const selectedIndicator = getSelectedIndicator();
+                const bankData = data[selectedBank];
+
                 const chartData = {
                     labels: years,
                     datasets: []
                 };
 
-                selectedBanks.forEach(bank => {
-                    const bankData = data[bank];
-                    const values = years.map(year => bankData.find(entry => entry.Год === parseInt(year))[selectedMetric]);
+                let indicators;
+                if (selectedIndicator === 'Баланс') {
+                    indicators = balanceIndicators;
+                } else if (selectedIndicator === 'Рентабельность') {
+                    indicators = profitabilityIndicators;
+                } else if (selectedIndicator === 'Ликвидность') {
+                    indicators = liquidityIndicators;
+                }
+
+                indicators.forEach(indicator => {
+                    const values = years.map(year => bankData.find(entry => entry.Год === parseInt(year))[indicator]);
 
                     chartData.datasets.push({
-                        label: bank,
+                        label: indicatorLabels[indicator] || indicator,
                         data: values,
-                        fill: false,
-                        borderColor: bankColors[bank],
-                        backgroundColor: bankColors[bank], // Цвет маркеров
-                        pointBackgroundColor: bankColors[bank], // Цвет кружков
-                        pointBorderColor: bankColors[bank], // Цвет границ кружков
-                        pointRadius: 4, // Размер кружков
-                        pointHoverRadius: 7, // Размер кружков при наведении
-                        tension: 0.1
+                        backgroundColor: colors[indicator],
+                        borderColor: colors[indicator],
+                        borderWidth: 1
                     });
                 });
 
@@ -832,9 +834,9 @@
                     chartInstance.destroy();
                 }
 
-                const ctx = document.getElementById('chart').getContext('2d');
+                const ctx = document.getElementById('histogram').getContext('2d');
                 chartInstance = new Chart(ctx, {
-                    type: 'line',
+                    type: 'bar',
                     data: chartData,
                     options: {
                         scales: {
@@ -847,13 +849,13 @@
                                 display: true,
                                 position: 'bottom',
                                 labels: {
-                                    usePointStyle: true, // Используем кружочки
-                                    pointStyle: 'circle', // Задаем стиль кружочков
+                                    usePointStyle: true,
+                                    pointStyle: 'rect',
                                     font: {
-                                        size: 14, // Увеличиваем размер шрифта
-                                        color: 'black' // Цвет текста в легенде
+                                        size: 14,
+                                        color: 'black'
                                     },
-                                    padding: 22 // Добавляем расстояние между подписями
+                                    padding: 22
                                 }
                             },
                             tooltip: {
@@ -869,12 +871,10 @@
                 });
             }
 
-            document.getElementById('metricSelect').addEventListener('change', createChart);
-            document.querySelectorAll('.checkbox input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', createChart);
-            });
+            document.getElementById('bankSelect').addEventListener('change', createHistogram);
+            document.getElementById('indicatorSelect').addEventListener('change', createHistogram);
 
-            createChart(); // Создаем график при загрузке
+            createHistogram();
         });
     </script>
 </body>
