@@ -19,10 +19,19 @@
             margin-top: 20px; 
         }
         canvas {
-            width: 85% !important;
-            height: 460px !important;
+            width: 100% !important;
+            max-width: 1000px;
+            height: 400px !important;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
         .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
             margin-top: 20px;
         }
         .button {
@@ -34,26 +43,29 @@
             border: none;
             border-radius: 5px;
             text-decoration: none;
-            margin: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
         .button:hover {
             background-color: #0056b3;
         }
         .select-container,
         .checkbox-container {
-            margin-bottom: 20px; 
+            width: 100%;
+            padding: 0 10px;
             text-align: center;
+            margin-bottom: 20px; 
         }
         select {
             font-size: 1em;
             padding: 10px;
             border-radius: 5px;
-            text-align-last: center;
+            width: 100%;
+            box-sizing: border-box;
         }
         .checkbox {
-            margin: 0 10px;
+            margin: 10px;
         }
         @media (prefers-color-scheme: dark) {
             body {
@@ -72,7 +84,7 @@
         @media (max-width: 768px) {
             canvas {
                 width: 100% !important;
-                height: auto !important;
+                height: 300px !important;
             }
             .button {
                 padding: 10px 20px;
@@ -84,18 +96,21 @@
             .select-container,
             .checkbox-container {
                 width: 100%;
-                padding: 0 10px;
             }
             select {
                 width: 100%;
                 box-sizing: border-box;
             }
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
         }
 
         @media (min-width: 768px) and (max-width: 1200px) {
             canvas {
-                width: 90% !important;
-                height: auto !important;
+                width: 100% !important;
+                height: 350px !important;
             }
             .button {
                 padding: 12px 25px;
@@ -106,11 +121,15 @@
             .select-container,
             .checkbox-container {
                 width: 80%;
-                padding: 0 10px;
             }
             select {
                 width: 80%;
                 box-sizing: border-box;
+            }
+            .button-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
 
@@ -131,6 +150,11 @@
             }
             select {
                 width: auto;
+            }
+            .button-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     </style>
