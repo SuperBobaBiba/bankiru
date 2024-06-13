@@ -71,12 +71,14 @@
         @media (max-width: 768px) {
             .container {
                 margin-top: 50px;
+                padding: 0 10px;
             }
             h1 {
                 font-size: 2em;
+                margin-bottom: 15px;
             }
             .description {
-                font-size: 1em;
+                font-size: 1.2em;
                 margin-bottom: 20px;
             }
             p {
@@ -87,47 +89,68 @@
                 padding: 10px 20px;
                 font-size: 1em;
                 margin: 5px;
+                width: 90%;
+                box-sizing: border-box;
             }
             table {
                 width: 100%;
-                font-size: 0.8em;
+                margin: 10px 0;
             }
             th, td {
-                padding: 5px;
-                font-size: 0.8em;
+                padding: 8px;
             }
             #filter {
-                width: 100%;
-                font-size: 0.8em;
-                padding: 5px;
+                width: 90%;
+                margin: 10px auto;
+            }
+            .button-container {
+                width: 90%;
+                margin: 20px auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
         }
 
         @media (min-width: 768px) and (max-width: 1200px) {
             .container {
-                margin-top: 75px;
+                margin-top: 80px;
             }
             h1 {
                 font-size: 2.5em;
+                margin-bottom: 18px;
             }
             .description {
-                font-size: 1.2em;
+                font-size: 1.4em;
+                margin-bottom: 25px;
             }
             p {
                 font-size: 1.1em;
+                margin-bottom: 25px;
+            }
+            .button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+                margin: 8px;
+                width: 80%;
             }
             table {
                 width: 90%;
-                font-size: 1em;
+                margin: 15px auto;
             }
             th, td {
-                padding: 8px;
-                font-size: 1em;
+                padding: 9px;
             }
             #filter {
-                width: 90%;
-                font-size: 1em;
-                padding: 8px;
+                width: 80%;
+                margin: 15px auto;
+            }
+            .button-container {
+                width: 80%;
+                margin: 20px auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
         }
 
@@ -137,25 +160,38 @@
             }
             h1 {
                 font-size: 3em;
+                margin-bottom: 20px;
             }
             .description {
                 font-size: 1.5em;
+                margin-bottom: 30px;
             }
             p {
                 font-size: 1.2em;
+                margin-bottom: 30px;
+            }
+            .button {
+                padding: 15px 30px;
+                font-size: 1.2em;
+                margin: 10px;
+                width: auto;
             }
             table {
                 width: 80%;
-                font-size: 1em;
+                margin: 20px auto;
             }
             th, td {
                 padding: 10px;
-                font-size: 1em;
             }
             #filter {
-                width: 80%;
-                font-size: 1em;
-                padding: 10px;
+                width: auto;
+            }
+            .button-container {
+                width: auto;
+                margin: 20px auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
             }
         }
     </style>
