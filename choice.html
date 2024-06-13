@@ -38,6 +38,75 @@
         .button:hover {
             background-color: #0056b3;
         }
+
+        /* Адаптивные стили */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 50px;
+                padding: 0 10px;
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+                margin: 5px;
+                width: 90%;
+                box-sizing: border-box;
+            }
+            .button-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1200px) {
+            .container {
+                margin-top: 80px;
+            }
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 18px;
+            }
+            .button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+                margin: 8px;
+                width: 80%;
+            }
+            .button-container {
+                width: 80%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                margin-top: 100px;
+            }
+            h1 {
+                font-size: 3em;
+                margin-bottom: 20px;
+            }
+            .button {
+                padding: 15px 30px;
+                font-size: 1.2em;
+                margin: 10px;
+                width: auto;
+            }
+            .button-container {
+                width: auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
