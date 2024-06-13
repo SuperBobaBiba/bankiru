@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор графиков</title>
+    <title>Линейные графики</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,11 +13,15 @@
             background-color: #f4f4f4;
         }
         .container {
-            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
         }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
+        canvas {
+            width: 85%;
+            max-width: 100%;
+            height: 460px;
         }
         .button-container {
             margin-top: 20px;
@@ -33,21 +37,47 @@
             text-decoration: none;
             margin: 10px;
             cursor: pointer;
-            width: 200px; /* Ширина кнопок */
+            transition: background-color 0.3s ease;
         }
         .button:hover {
             background-color: #0056b3;
+        }
+        .select-container,
+        .checkbox-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        select {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            text-align-last: center;
+        }
+        .checkbox {
+            margin: 0 10px;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #f4f4f4;
+            }
+            .button {
+                background-color: #0056b3;
+            }
+            .button:hover {
+                background-color: #007BFF;
+            }
         }
 
         /* Адаптивные стили */
         @media (max-width: 768px) {
             .container {
-                margin-top: 50px;
+                margin-top: 10px;
                 padding: 0 10px;
             }
-            h1 {
-                font-size: 2em;
-                margin-bottom: 15px;
+            canvas {
+                width: 100%;
+                height: auto;
             }
             .button {
                 padding: 10px 20px;
@@ -62,15 +92,24 @@
                 flex-direction: column;
                 align-items: center;
             }
+            .select-container,
+            .checkbox-container {
+                width: 100%;
+                padding: 0 10px;
+            }
+            select {
+                width: 100%;
+                box-sizing: border-box;
+            }
         }
 
         @media (min-width: 768px) and (max-width: 1200px) {
             .container {
-                margin-top: 80px;
+                margin-top: 15px;
             }
-            h1 {
-                font-size: 2.5em;
-                margin-bottom: 18px;
+            canvas {
+                width: 90%;
+                height: auto;
             }
             .button {
                 padding: 12px 25px;
@@ -84,15 +123,24 @@
                 flex-direction: column;
                 align-items: center;
             }
+            .select-container,
+            .checkbox-container {
+                width: 80%;
+                padding: 0 10px;
+            }
+            select {
+                width: 80%;
+                box-sizing: border-box;
+            }
         }
 
         @media (min-width: 1200px) {
             .container {
-                margin-top: 100px;
+                margin-top: 20px;
             }
-            h1 {
-                font-size: 3em;
-                margin-bottom: 20px;
+            canvas {
+                width: 85%;
+                height: 460px;
             }
             .button {
                 padding: 15px 30px;
@@ -106,8 +154,16 @@
                 flex-direction: row;
                 justify-content: center;
             }
+            .select-container,
+            .checkbox-container {
+                width: auto;
+            }
+            select {
+                width: auto;
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
