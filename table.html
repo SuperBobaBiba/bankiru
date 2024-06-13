@@ -95,7 +95,6 @@
         .select2-container {
             width: 200px !important;
         }
-
         .select2-container::after {
             content: '\25BC'; /* Код стрелочки вниз */
             font-size: 13px; /* Размер шрифта стрелочки */
@@ -109,7 +108,6 @@
         .button-container {
             margin-top: 20px;
         }
-
         .column-dropdown-content {
             display: none;
             position: absolute;
@@ -133,6 +131,130 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* Адаптивные стили */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 30px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .description {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+            p {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+            .button-return, .button-indicators {
+                padding: 10px 20px;
+                font-size: 1em;
+                margin: 5px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            table {
+                width: 100%;
+                font-size: 0.8em;
+            }
+            th, td {
+                padding: 5px;
+                font-size: 0.8em;
+            }
+            .filters {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .filter {
+                width: 100%;
+                margin: 0;
+            }
+            .select2-container {
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1200px) {
+            .container {
+                margin-top: 40px;
+            }
+            h1 {
+                font-size: 2.5em;
+            }
+            .description {
+                font-size: 1.2em;
+            }
+            p {
+                font-size: 1.1em;
+            }
+            .button-return, .button-indicators {
+                padding: 12px 25px;
+                font-size: 1.1em;
+                margin: 8px;
+                width: 90%;
+            }
+            table {
+                width: 90%;
+                font-size: 1em;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 1em;
+            }
+            .filters {
+                flex-direction: row;
+                gap: 10px;
+            }
+            .filter {
+                width: auto;
+                margin: 0 5px;
+            }
+            .select2-container {
+                width: 200px !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                margin-top: 50px;
+            }
+            h1 {
+                font-size: 3em;
+            }
+            .description {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 1.2em;
+            }
+            .button-return, .button-indicators {
+                padding: 15px 30px;
+                font-size: 1.2em;
+                margin: 10px;
+                width: 200px;
+            }
+            table {
+                width: 80%;
+                font-size: 1em;
+            }
+            th, td {
+                padding: 10px;
+                font-size: 1em;
+            }
+            .filters {
+                flex-direction: row;
+                gap: 10px;
+            }
+            .filter {
+                width: auto;
+                margin: 0 10px;
+            }
+            .select2-container {
+                width: 200px !important;
+            }
         }
     </style>
 </head>
